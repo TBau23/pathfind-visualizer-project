@@ -1,7 +1,7 @@
 import React from 'react';
 import './PathFinder.css';
 
-import Node from './Node.js';
+import Grid from './Grid/Grid';
 
 
 const PathFinder = () => {
@@ -9,6 +9,7 @@ const PathFinder = () => {
     return (
         <div>
             <h2>Pathfinding</h2>
+            <Grid />
         </div>
     )
   
