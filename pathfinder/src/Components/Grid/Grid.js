@@ -5,9 +5,12 @@ import Node from '../Node/Node';
 class Grid extends React.Component {
     constructor(props) {
         super(props)
+        
 
         this.state = {
-            nodes: []
+            nodes: [],
+            mouseDown: false,
+
         }
     }
 
@@ -23,18 +26,28 @@ class Grid extends React.Component {
         this.setState({nodes : nodes})
     }
 
+    handleMouseDown() {
+        this.setState({mouseDown: true})
+    }
+
+    handleMouseUp() {
+        this.setState({mouseDown: false})
+    }
+
+    
+
     render() {
         const {nodes} = this.state;
         console.log(nodes)
         
         return (
-            <div className='grid'>
+            <div className='grid' onMouseDown={() => this.handleMouseDown()} onMouseUp={() => this.handleMouseUp()}>
                 {nodes.map((row, i) => {
                     return (
                         <div key={i}>
                             {row.map((node, j) => {
                                 return (
-                                    <Node key={i * 40 + j} ></Node>
+                                    <Node key={i * 40 + j} mouseStatus={this.state.mouseDown} ></Node>
                                 )
                             })}
                         </div>
