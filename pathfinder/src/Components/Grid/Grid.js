@@ -10,7 +10,7 @@ class Grid extends React.Component {
         this.state = {
             nodes: [],
             mouseDown: false,
-
+            rightClick: false
         }
     }
 
@@ -19,7 +19,7 @@ class Grid extends React.Component {
         for (let row = 0; row < 15; row++) {
             const currentRow = [];
             for (let col = 0; col < 40; col++) {
-                currentRow.push([])
+                currentRow.push(null)
             }
             nodes.push(currentRow)
         }
