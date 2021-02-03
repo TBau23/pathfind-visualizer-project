@@ -1,16 +1,14 @@
 import React from 'react';
 import './App.css';
 
-import PathFinder from './Components/PathFinder.js';
+import Grid from './Components/Grid/Grid';
 
 function App() {
   return (
     <div className="App">
-      <PathFinder>
-        
-      </PathFinder>
+      <Grid>
+      </Grid>
     </div>
   );
 }
-
 export default App;

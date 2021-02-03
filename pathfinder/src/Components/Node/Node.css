@@ -18,6 +18,14 @@
   background-color: darkblue;
 }
 
+.start {
+  background-color: greenyellow;
+}
+
+.end {
+  background-color: purple;
+}
+
 @keyframes build-wall {
   50% {
     transform: scale(1.2);
