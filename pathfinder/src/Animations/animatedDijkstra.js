@@ -8,16 +8,18 @@ export function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
         }
         setTimeout(() => {
             const node = visitedNodesInOrder[i]; // take first visited node and animate it
+            
             document.getElementById(`node-${node.row}-${node.col}`).className =
-            'node node-visted';
+            'node node-visited';
         }, 10 * i);
     };
 };
 
 export function animateShortestPath(nodesInShortestPathOrder) {
-    for ( let i = 0; i < nodesInShortestPathOrder; i++) {
+    for ( let i = 0; i < nodesInShortestPathOrder.length; i++) {
         setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
+            
             document.getElementById(`node-${node.row}-${node.col}`).className = 
             'node node-shortest-path';
         }, 50 * i);

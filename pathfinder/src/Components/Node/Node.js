@@ -15,7 +15,7 @@ class Node extends React.Component {
     return (
         <div
         id={`node-${nodeInfo.row}-${nodeInfo.col}`}
-        className={`${nodeType} node`}
+        className={`node ${nodeType}`}
         onMouseEnter={canBuildWall ? () => handleMouseEnter(nodeInfo.row, nodeInfo.col) : null}
         onMouseDown={canBuildWall ? () => handleMouseDown(nodeInfo.row, nodeInfo.col) : null}
         onMouseUp={() => handleMouseUp()}
