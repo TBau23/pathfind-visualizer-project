@@ -1,12 +1,13 @@
 import React from 'react';
 import './Grid.css';
 import Node from '../Node/Node';
+import {animateDijkstra} from '../../Animations/animatedDijkstra';
+import {dijkstras, getNodesInShortestPathOrder} from '../../Algorithms/dijsktras';
 
-
-const DEFAULT_START_ROW = 7
-const DEFAULT_START_COLUMN = 10
-const DEFAULT_END_ROW = 7
-const DEFAULT_END_COLUMN = 30
+const DEFAULT_START_ROW = 7;
+const DEFAULT_START_COLUMN = 10;
+const DEFAULT_END_ROW = 7;
+const DEFAULT_END_COLUMN = 30;
 
 class Grid extends React.Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class Grid extends React.Component {
             prevNode: null
         }
     }
+
     generateGrid() {
         const nodes = []
         for (let row = 0; row < 15; row++) {
@@ -45,15 +47,17 @@ class Grid extends React.Component {
             }
             nodes.push(currentRow)
         }
-        this.setState({nodes : nodes})
+        return nodes
     }
 
     clearBoard() {
-        this.generateGrid()
+        const grid = this.generateGrid()
+        this.setState({nodes: grid})
     }
 
     componentDidMount() {
-        this.generateGrid()
+        const grid = this.generateGrid()
+        this.setState({nodes: grid})
     }
 
     updateGrid(nodes, row, col) {
@@ -82,14 +86,23 @@ class Grid extends React.Component {
         this.setState({nodes: updatedGrid})
     }
 
+    visualizeDijkstra() {
+        const {nodes} = this.state
+        const startNode = nodes[DEFAULT_START_ROW][DEFAULT_START_COLUMN];
+        const endNode = nodes[DEFAULT_END_ROW][DEFAULT_END_COLUMN];
+        const visitedNodesInOrder = dijkstras(nodes, startNode, endNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        
+    }
 
     render() {
         const {nodes} = this.state;
-        console.log(nodes)
         
         return (
             <div>
                 <button style={{marginTop: '50px'}} onClick={() => this.clearBoard()}>Reset Board</button>
+                <button onClick={() => this.visualizeDijkstra()}>Run Dijkstra's Pathfinding</button>
                 <div className='grid' >
                     {nodes.map((row, i) => {
                         return (

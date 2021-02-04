@@ -4,7 +4,7 @@ import './Node.css'
 class Node extends React.Component {
     
     render() {
-        const { nodeInfo, mouseStatus, handleMouseDown, handleMouseUp, handleMouseEnter } = this.props
+        const { nodeInfo, handleMouseDown, handleMouseUp, handleMouseEnter } = this.props
         // going to have a variety of node types, class name will be determined based on that
         const nodeType = nodeInfo.wall ? 'wall' 
                 : nodeInfo.start_node ? 'start' 
@@ -13,9 +13,9 @@ class Node extends React.Component {
                 : ''
         const canBuildWall = !nodeInfo.start_node && !nodeInfo.end_node
     return (
-        <div 
+        <div
+        id={`node-${nodeInfo.row}-${nodeInfo.col}`}
         className={`${nodeType} node`}
-        
         onMouseEnter={canBuildWall ? () => handleMouseEnter(nodeInfo.row, nodeInfo.col) : null}
         onMouseDown={canBuildWall ? () => handleMouseDown(nodeInfo.row, nodeInfo.col) : null}
         onMouseUp={() => handleMouseUp()}
