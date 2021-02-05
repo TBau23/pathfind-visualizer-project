@@ -13,7 +13,7 @@ class Node extends React.Component {
 
         // setTimeout(() => {
         //     target.style.display = 'none'
-        // }, 0);
+        // }, 0); ---> not clear to me that we still need this timeout
     }
 
     // dragOver(e) {

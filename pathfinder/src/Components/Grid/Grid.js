@@ -3,12 +3,12 @@ import './Grid.css';
 import Node from '../Node/Node';
 import {animateDijkstra} from '../../Animations/animatedDijkstra';
 import {dijkstras, getNodesInShortestPathOrder} from '../../Algorithms/dijsktras';
-import { parseRowAndColumn } from '../../Utilities/parseRowAndColumn';
+import { parseRowAndColumn } from '../../Utilities/utilities';
 
-const DEFAULT_START_ROW = 7;
-const DEFAULT_START_COLUMN = 10;
-const DEFAULT_END_ROW = 7;
-const DEFAULT_END_COLUMN = 30;
+// const DEFAULT_START_ROW = 7;
+// const DEFAULT_START_COLUMN = 10;
+// const DEFAULT_END_ROW = 7;
+// const DEFAULT_END_COLUMN = 30;
 
 class Grid extends React.Component {
     constructor(props) {
@@ -17,6 +17,12 @@ class Grid extends React.Component {
         this.state = {
             nodes: [],
             mouseDown: false,
+            default_nodes: {
+                start_row: 7,
+                start_col: 10,
+                end_row: 7,
+                end_col: 30
+            }
         }
 
         this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -30,8 +36,8 @@ class Grid extends React.Component {
     createNode(col, row) {
         return {
             wall: false,
-            start_node: col === DEFAULT_START_COLUMN && row === DEFAULT_START_ROW,
-            end_node: col === DEFAULT_END_COLUMN && row === DEFAULT_END_ROW,
+            start_node: col === this.state.default_nodes.start_col && row === this.state.default_nodes.start_row,
+            end_node: col === this.state.default_nodes.end_col && row === this.state.default_nodes.end_row,
             weight: false,
             col: col,
             row: row,
@@ -74,18 +80,36 @@ class Grid extends React.Component {
         return newGrid; 
     }
 
-    updateStartNode(nodes, row, col) {
+    updateDefaultNode(nodes, row, col, nodeType) {
         const newGrid = nodes.slice();
-        const oldStart = newGrid[DEFAULT_START_ROW][DEFAULT_START_COLUMN];
-        oldStart.start_node = false;
-        const targetNode = newGrid[row][col];
-        const newStart = {
+        if(nodeType === 'start') {
+            const oldStart = newGrid[this.state.default_nodes.start_row][this.state.default_nodes.start_col];
+            oldStart.start_node = false;
+            const targetNode = newGrid[row][col];
+            const newStart = {
             ...targetNode,
             start_node: true
+            };
+            newGrid[row][col] = newStart;
+            this.setState({default_nodes: {
+            ...this.state.default_nodes, start_row: row, start_col: col
+            }})
+        } else {
+            const oldEnd = newGrid[this.state.default_nodes.end_row][this.state.default_nodes.end_col]
+            oldEnd.end_node = false;
+            const targetNode = newGrid[row][col];
+            const newEnd = {
+                ...targetNode,
+                end_node: true
+            };
+            newGrid[row][col] = newEnd;
+            this.setState({default_nodes: {
+                ...this.state.default_nodes, end_row: row, end_col: col
+            }})
         };
-        newGrid[row][col] = newStart;
+        
         return newGrid;
-    }
+    };
 
     handleMouseDown(row, col) {
         const updatedGrid = this.updateGridWalls(this.state.nodes, row, col);
@@ -106,13 +130,16 @@ class Grid extends React.Component {
         e.preventDefault();
         const node_id = e.dataTransfer.getData('node_id');
         const node = document.getElementById(node_id);
+        const startOrEnd = node.className.split(" ")[1] // identifies whether were moving start or end node
         node.style.display = 'block';
         console.log('drop')
         const row = parseRowAndColumn(e.target.id)[0];
         const col = parseRowAndColumn(e.target.id)[1];
-        console.log(row, col)
-        const updatedGrid = this.updateStartNode(this.state.nodes, row, col);
-        this.setState({nodes: updatedGrid});
+        if(typeof row === 'number' && typeof col === 'number') {
+            const updatedGrid = this.updateDefaultNode(this.state.nodes, row, col, startOrEnd);
+            this.setState({nodes: updatedGrid});
+        }
+        
     }
 
     handleDragOver(e) {
@@ -121,8 +148,8 @@ class Grid extends React.Component {
 
     visualizeDijkstra() {
         const {nodes} = this.state
-        const startNode = nodes[DEFAULT_START_ROW][DEFAULT_START_COLUMN];
-        const endNode = nodes[DEFAULT_END_ROW][DEFAULT_END_COLUMN];
+        const startNode = nodes[this.state.default_nodes.start_row][this.state.default_nodes.start_col];
+        const endNode = nodes[this.state.default_nodes.end_row][this.state.default_nodes.end_col];
         const visitedNodesInOrder = dijkstras(nodes, startNode, endNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
