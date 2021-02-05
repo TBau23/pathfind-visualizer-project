@@ -1,15 +1,14 @@
 // Dijkstra's Shortest Path Algorithm
 // using Clement's implementation 
 
-export function dijkstras(grid, start, end) {
-    // need to update this to go along with start node changing 
+export function dijkstras(grid, start, end) { 
     const visitedNodesInOrder = [];
     start.distance = 0 
     // need to grab all unvisited nodes
     const unvisitedNodes = getAllNodes(grid) // array
     while (unvisitedNodes.length) {
         sortNodesByDistance(unvisitedNodes); // in place sort, ascending order - on first loop, the start node is only one with any distance
-        const closestNode = unvisitedNodes.shift() // taking closest node from front of 'queue', removes it
+        const closestNode = unvisitedNodes.shift(); // taking closest node from front of 'queue', removes it
         if(closestNode.wall) continue; // if the node is a wall we don't track it in any way - just skip it
         if(closestNode.distance === Infinity) return visitedNodesInOrder; // if the closest node is infinity, the search is stuck
         closestNode.visited = true; // node has been visited at this point
@@ -42,7 +41,7 @@ function sortNodesByDistance(nodes) {
     nodes.sort((a, b) => a.distance - b.distance);
 }
 
-function getAllNodes(grid) {
+export function getAllNodes(grid) {
     // nodes is an array of objects
     const allNodes = []
     for (let i = 0; i < grid.length; i++) {
@@ -58,7 +57,7 @@ function getAllNodes(grid) {
 export function getNodesInShortestPathOrder(endNode) {
     const nodesInShortestPathOrder = [];
     let currentNode = endNode;
-    while(currentNode) {
+    while(currentNode) { // prev node of first node in list will be null
         nodesInShortestPathOrder.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }

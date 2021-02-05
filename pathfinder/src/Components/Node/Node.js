@@ -47,6 +47,7 @@ class Node extends React.Component {
         >
             {isStart ? <SendIcon fontSize='large' />: null}
             {isEnd ? <EmojiEventsIcon fontSize='large'/> : null}
+            
         </div>
     )
     }

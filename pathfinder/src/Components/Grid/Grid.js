@@ -3,6 +3,7 @@ import './Grid.css';
 import Node from '../Node/Node';
 import {animateDijkstra} from '../../Animations/animatedDijkstra';
 import {dijkstras, getNodesInShortestPathOrder} from '../../Algorithms/dijsktras';
+import { aStar } from '../../Algorithms/aStar';
 import { parseRowAndColumn } from '../../Utilities/utilities';
 
 // const DEFAULT_START_ROW = 7;
@@ -43,7 +44,9 @@ class Grid extends React.Component {
             row: row,
             distance: Infinity,
             visited: false,
-            prevNode: null
+            prevNode: null,
+            h_cost: Infinity,
+            f_cost: Infinity,
         }
     }
 
@@ -139,7 +142,6 @@ class Grid extends React.Component {
             const updatedGrid = this.updateDefaultNode(this.state.nodes, row, col, startOrEnd);
             this.setState({nodes: updatedGrid});
         }
-        
     }
 
     handleDragOver(e) {
@@ -155,6 +157,16 @@ class Grid extends React.Component {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
+    visualizeAstar() {
+        const {nodes} = this.state;
+        const startNode = nodes[this.state.default_nodes.start_row][this.state.default_nodes.start_col];
+        const endNode = nodes[this.state.default_nodes.end_row][this.state.default_nodes.end_col];
+        const visitedNodesInOrder = aStar(nodes, startNode, endNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+
+    }
+
     render() {
         const {nodes} = this.state;
         
@@ -164,6 +176,7 @@ class Grid extends React.Component {
                 <div className='grid' onDrop={this.handleDrop} onDragOver={this.handleDragOver}>
                 <button style={{marginBottom: 30}} onClick={() => this.clearBoard()}>Reset Board</button>
                 <button style={{marginBottom: 30}} onClick={() => this.visualizeDijkstra()}>Run Dijkstra's Pathfinding</button>
+                <button onClick={() => this.visualizeAstar()}>Run A-Star Algorithm</button>
                     {nodes.map((row, i) => {
                         return (
                             <div key={i}>
