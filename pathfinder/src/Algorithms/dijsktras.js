@@ -10,7 +10,6 @@ export function dijkstras(grid, start, end) {
     while (unvisitedNodes.length) {
         sortNodesByDistance(unvisitedNodes); // in place sort, ascending order - on first loop, the start node is only one with any distance
         const closestNode = unvisitedNodes.shift() // taking closest node from front of 'queue', removes it
-        console.log(closestNode)
         if(closestNode.wall) continue; // if the node is a wall we don't track it in any way - just skip it
         if(closestNode.distance === Infinity) return visitedNodesInOrder; // if the closest node is infinity, the search is stuck
         closestNode.visited = true; // node has been visited at this point

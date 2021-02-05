@@ -5,3 +5,4 @@ export function parseRowAndColumn(id) {
     const col = parseInt(rowNcol[1])
     return [row,col]
 };
+
