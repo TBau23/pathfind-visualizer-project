@@ -52,9 +52,9 @@ class Grid extends React.Component {
 
     generateGrid() {
         const nodes = []
-        for (let row = 0; row < 15; row++) {
+        for (let row = 0; row < 25; row++) {
             const currentRow = [];
-            for (let col = 0; col < 40; col++) {
+            for (let col = 0; col < 60; col++) {
                 currentRow.push(this.createNode(col, row))
             }
             nodes.push(currentRow)
@@ -183,7 +183,7 @@ class Grid extends React.Component {
                                 {row.map((node, j) => {
                                     return (
                                         <Node
-                                            key={i * 40 + j}
+                                            key={i * 60 + j}
                                             mouseStatus={this.state.mouseDown}
                                             nodeInfo={node}
                                             handleMouseDown={this.handleMouseDown}
