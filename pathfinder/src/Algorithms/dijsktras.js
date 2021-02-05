@@ -2,6 +2,7 @@
 // using Clement's implementation 
 
 export function dijkstras(grid, start, end) {
+    // need to update this to go along with start node changing 
     const visitedNodesInOrder = [];
     start.distance = 0 
     // need to grab all unvisited nodes
