@@ -3,6 +3,7 @@ import './Grid.css';
 import Node from '../Node/Node';
 import {animateDijkstra} from '../../Animations/animatedDijkstra';
 import {dijkstras, getNodesInShortestPathOrder} from '../../Algorithms/dijsktras';
+import { parseRowAndColumn } from '../../Utilities/parseRowAndColumn';
 
 const DEFAULT_START_ROW = 7;
 const DEFAULT_START_COLUMN = 10;
@@ -21,7 +22,9 @@ class Grid extends React.Component {
         this.handleMouseDown = this.handleMouseDown.bind(this);
         this.handleMouseEnter = this.handleMouseEnter.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
-
+        this.handleDrop = this.handleDrop.bind(this);
+        this.handleDragOver = this.handleDragOver.bind(this);
+        
     }
 
     createNode(col, row) {
@@ -60,19 +63,32 @@ class Grid extends React.Component {
         this.setState({nodes: grid})
     }
 
-    updateGrid(nodes, row, col) {
-        let newGrid = nodes.slice() // create copy so that we do not directly mutate state
+    updateGridWalls(nodes, row, col) {
+        const newGrid = nodes.slice() // create copy so that we do not directly mutate state
         const currentNode = newGrid[row][col];
         const newNode = {
             ...currentNode,
             wall: !currentNode.wall
         };
         newGrid[row][col] = newNode; // replace current node with new node, simply flipping the wall
+        return newGrid; 
+    }
+
+    updateStartNode(nodes, row, col) {
+        const newGrid = nodes.slice();
+        const oldStart = newGrid[DEFAULT_START_ROW][DEFAULT_START_COLUMN];
+        oldStart.start_node = false;
+        const targetNode = newGrid[row][col];
+        const newStart = {
+            ...targetNode,
+            start_node: true
+        };
+        newGrid[row][col] = newStart;
         return newGrid;
     }
 
     handleMouseDown(row, col) {
-        const updatedGrid = this.updateGrid(this.state.nodes, row, col);
+        const updatedGrid = this.updateGridWalls(this.state.nodes, row, col);
         this.setState({nodes: updatedGrid, mouseDown: true});
     }
 
@@ -82,8 +98,25 @@ class Grid extends React.Component {
 
     handleMouseEnter(row, col) {
         if(!this.state.mouseDown) return;
-        const updatedGrid = this.updateGrid(this.state.nodes, row, col)
+        const updatedGrid = this.updateGridWalls(this.state.nodes, row, col)
         this.setState({nodes: updatedGrid})
+    }
+
+    handleDrop(e) {
+        e.preventDefault();
+        const node_id = e.dataTransfer.getData('node_id');
+        const node = document.getElementById(node_id);
+        node.style.display = 'block';
+        console.log('drop')
+        const row = parseRowAndColumn(e.target.id)[0];
+        const col = parseRowAndColumn(e.target.id)[1];
+        console.log(row, col)
+        const updatedGrid = this.updateStartNode(this.state.nodes, row, col);
+        this.setState({nodes: updatedGrid});
+    }
+
+    handleDragOver(e) {
+        e.preventDefault()
     }
 
     visualizeDijkstra() {
@@ -93,7 +126,6 @@ class Grid extends React.Component {
         const visitedNodesInOrder = dijkstras(nodes, startNode, endNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-        
     }
 
     render() {
@@ -101,9 +133,10 @@ class Grid extends React.Component {
         
         return (
             <div>
-                <button style={{marginTop: '50px'}} onClick={() => this.clearBoard()}>Reset Board</button>
-                <button onClick={() => this.visualizeDijkstra()}>Run Dijkstra's Pathfinding</button>
-                <div className='grid' >
+                
+                <div className='grid' onDrop={this.handleDrop} onDragOver={this.handleDragOver}>
+                <button style={{marginBottom: 30}} onClick={() => this.clearBoard()}>Reset Board</button>
+                <button style={{marginBottom: 30}} onClick={() => this.visualizeDijkstra()}>Run Dijkstra's Pathfinding</button>
                     {nodes.map((row, i) => {
                         return (
                             <div key={i}>
@@ -116,6 +149,8 @@ class Grid extends React.Component {
                                             handleMouseDown={this.handleMouseDown}
                                             handleMouseUp={this.handleMouseUp}
                                             handleMouseEnter={this.handleMouseEnter}
+                                            handleDragOver={this.handleDragOver}
+                                            handleDrop={this.handleDrop}
                                             >
 
                                             </Node>

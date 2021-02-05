@@ -1,5 +1,5 @@
 .grid {
   padding: 100px 100px;
-  /* margin: auto; */
-  position: absolute;
+  border: 2px solid rgb(237, 18, 18);
+  position: fixed;
 }
